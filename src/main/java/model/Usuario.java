@@ -6,14 +6,21 @@ public abstract class Usuario {
     protected String nombre;
     protected String email;
     protected String password;
+    private String tipo;
 
     public Usuario() {}
-
     public Usuario(int id, String nombre, String email, String password) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
+    }
+    public Usuario(int id, String nombre, String email, String password, String tipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.tipo = tipo;
     }
 
     // Getters y setters
@@ -28,6 +35,9 @@ public abstract class Usuario {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
     // Métodos comunes
     public boolean login(String email, String password) {
