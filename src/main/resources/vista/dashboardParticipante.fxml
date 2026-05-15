@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0"
+            prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DashboardParticipanteController">
+
+    <!-- TOP -->
+
+    <top>
+
+        <Label text="Dashboard Participante"
+               BorderPane.alignment="CENTER"
+               style="-fx-font-size: 24px;
+                      -fx-font-weight: bold;
+                      -fx-padding: 20px;" />
+
+    </top>
+
+    <!-- CENTER -->
+
+    <center>
+
+        <HBox spacing="30"
+              alignment="CENTER">
+
+            <padding>
+                <Insets top="20"
+                        right="20"
+                        bottom="20"
+                        left="20"/>
+            </padding>
+
+            <!-- EVENTOS PARTICIPADOS -->
+
+            <VBox spacing="10">
+
+                <Label text="Últimos eventos participados"
+                       style="-fx-font-size: 16px;
+                              -fx-font-weight: bold;" />
+
+                <ListView fx:id="listParticipados"
+                          prefWidth="350"
+                          prefHeight="350"/>
+
+            </VBox>
+
+            <!-- EVENTOS ACTIVOS -->
+
+            <VBox spacing="10">
+
+                <Label text="Eventos activos"
+                       style="-fx-font-size: 16px;
+                              -fx-font-weight: bold;" />
+
+                <ListView fx:id="listActivos"
+                          prefWidth="350"
+                          prefHeight="350"/>
+
+            </VBox>
+
+        </HBox>
+
+    </center>
+
+    <!-- BOTTOM -->
+
+    <bottom>
+
+        <HBox spacing="20"
+              alignment="CENTER"
+              style="-fx-padding: 20px;">
+
+            <Button text="Ver eventos activos"
+                    prefWidth="180"
+                    prefHeight="40"/>
+
+            <Button text="Historial"
+                    prefWidth="180"
+                    prefHeight="40"/>
+
+            <Button text="Cerrar sesión"
+                    prefWidth="180"
+                    prefHeight="40"/>
+
+        </HBox>
+
+    </bottom>
+
+</BorderPane>
