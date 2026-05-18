@@ -8,7 +8,8 @@ import javafx.scene.Scene;
 
 import javafx.stage.Stage;
 
-public class MainAppTest extends Application {
+public class MainAppTest
+        extends Application {
 
     @Override
     public void start(Stage stage)
@@ -17,9 +18,10 @@ public class MainAppTest extends Application {
         FXMLLoader loader =
                 new FXMLLoader(
 
-                        getClass().getResource(
-                                "/vista/dashboardParticipante.fxml"
-                        )
+                        getClass()
+                                .getResource(
+                                        "/vista/inicioSesion.fxml"
+                                )
                 );
 
         Scene scene =
@@ -28,8 +30,12 @@ public class MainAppTest extends Application {
         stage.setScene(scene);
 
         stage.setTitle(
-                "Dashboard Participante"
+                "Gestor de Torneos"
         );
+
+        stage.setMinWidth(900);
+
+        stage.setMinHeight(600);
 
         stage.show();
     }

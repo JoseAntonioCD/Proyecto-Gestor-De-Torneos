@@ -3,8 +3,6 @@ package DAO;
 import dataAccess.ConnectionBD;
 import model.*;
 
-import dataAccess.ConnectionBD;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +118,7 @@ public class EventoDAO {
         );
     }
 
-    public boolean insertarEvento(Evento evento) {
+    public boolean insertarEvento(Evento evento, int idEntidad) {
 
         String sql = """
             INSERT INTO eventos(
@@ -316,4 +314,5 @@ public class EventoDAO {
 
         return eventos;
     }
+
 }
