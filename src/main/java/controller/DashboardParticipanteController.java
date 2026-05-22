@@ -2,41 +2,28 @@ package controller;
 
 import DAO.EventoDAO;
 import DAO.ParticipacionDAO;
-
+import util.ManejoSesion;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import model.Usuario;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.ListView;
-
 import model.Evento;
 
 public class DashboardParticipanteController {
 
-    /*
-     * Lista de eventos participados
-     */
-
     @FXML
     private ListView<Evento> listParticipados;
 
-    /*
-     * Lista de eventos activos
-     */
 
     @FXML
     private ListView<Evento> listActivos;
 
-    /*
-     * DAOs
-     */
 
     private EventoDAO eventoDAO;
 
     private ParticipacionDAO participacionDAO;
-
-    /*
-     * Se ejecuta automáticamente
-     * al abrir el dashboard
-     */
 
     public void initialize() {
 
@@ -49,12 +36,13 @@ public class DashboardParticipanteController {
         cargarEventos();
     }
 
-    /*
-     * Carga información
-     * en las listas visuales
-     */
-
     private void cargarEventos() {
+
+        Usuario usuario =
+                ManejoSesion.getUsuarioActual();
+
+        int idUsuario =
+                usuario.getId();
 
         /*
          * Eventos activos
@@ -68,16 +56,139 @@ public class DashboardParticipanteController {
                                 .getEventosActivos()
                 );
 
-        /*
-         * Eventos participados
-         */
-
         listParticipados
                 .getItems()
                 .addAll(
 
                         participacionDAO
-                                .getUltimosEventosParticipados(1)
+                                .getUltimosEventosParticipados(
+                                        idUsuario
+                                )
                 );
+    }
+
+    @FXML
+    public void handleLogout() {
+
+
+        ManejoSesion.logout();
+
+        try {
+
+            /*
+             * Abrir login
+             */
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass()
+                                    .getResource(
+                                            "/vista/inicioSesion.fxml"
+                                    )
+                    );
+
+            Scene scene =
+                    new Scene(loader.load());
+
+            Stage stage =
+                    new Stage();
+
+            stage.setScene(scene);
+
+            stage.setTitle(
+                    "Inicio de sesión"
+            );
+
+            stage.show();
+
+
+            listActivos
+                    .getScene()
+                    .getWindow()
+                    .hide();
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleEventosActivos() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass()
+                                    .getResource(
+                                            "/vista/eventosActivos.fxml"
+                                    )
+                    );
+
+            Scene scene =
+                    new Scene(loader.load());
+
+            Stage stage =
+                    new Stage();
+
+            stage.setScene(scene);
+
+            stage.setTitle(
+                    "Eventos Activos"
+            );
+
+            stage.show();
+
+            listActivos
+                    .getScene()
+                    .getWindow()
+                    .hide();
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleHistorial() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass()
+                                    .getResource(
+                                            "/vista/historial.fxml"
+                                    )
+                    );
+
+            Scene scene =
+                    new Scene(loader.load());
+
+            Stage stage =
+                    new Stage();
+
+            stage.setScene(scene);
+
+            stage.setTitle(
+                    "Historial"
+            );
+
+            stage.show();
+
+            listActivos
+                    .getScene()
+                    .getWindow()
+                    .hide();
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

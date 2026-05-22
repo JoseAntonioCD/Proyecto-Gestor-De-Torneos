@@ -4,7 +4,9 @@ import DAO.EventoDAO;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import util.ManejoSesion;
 
+import model.Usuario;
 import javafx.scene.Scene;
 
 import javafx.scene.control.Alert;
@@ -29,11 +31,6 @@ public class CrearEventoController {
 
     private EventoDAO eventoDAO;
 
-    /*
-     * ID temporal del promotor
-     */
-
-    private int idEntidad = 1;
 
     public void initialize() {
 
@@ -41,18 +38,18 @@ public class CrearEventoController {
                 new EventoDAO();
     }
 
-    /*
-     * Crear evento
-     */
-
     @FXML
     public void handleCrearEvento() {
+
+
 
         String nombre =
                 txtNombre.getText();
 
         String descripcion =
                 txtDescripcion.getText();
+
+
 
         if(nombre.isEmpty() ||
                 descripcion.isEmpty() ||
@@ -64,6 +61,8 @@ public class CrearEventoController {
 
             return;
         }
+
+
 
         Evento evento =
                 new Evento();
@@ -78,13 +77,24 @@ public class CrearEventoController {
 
         evento.setEstado("ACTIVO");
 
-        boolean ok =
+
+
+        Usuario usuarioActual =
+                ManejoSesion.getUsuarioActual();
+
+
+
+        boolean creado =
                 eventoDAO.insertarEvento(
+
                         evento,
-                        idEntidad
+
+                        usuarioActual.getId()
                 );
 
-        if(ok) {
+
+
+        if(creado) {
 
             mostrarInfo(
                     "Evento creado correctamente"
@@ -92,11 +102,14 @@ public class CrearEventoController {
 
             limpiarCampos();
         }
-    }
 
-    /*
-     * Limpia formulario
-     */
+        else {
+
+            mostrarError(
+                    "Error al crear evento"
+            );
+        }
+    }
 
     private void limpiarCampos() {
 
@@ -107,9 +120,6 @@ public class CrearEventoController {
         dateEvento.setValue(null);
     }
 
-    /*
-     * Volver dashboard
-     */
 
     @FXML
     public void handleVolver() {
@@ -150,9 +160,6 @@ public class CrearEventoController {
         }
     }
 
-    /*
-     * Alerts
-     */
 
     private void mostrarError(
             String mensaje

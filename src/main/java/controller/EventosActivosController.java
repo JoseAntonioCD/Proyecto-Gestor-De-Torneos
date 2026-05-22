@@ -2,7 +2,9 @@ package controller;
 
 import DAO.EventoDAO;
 import DAO.ParticipacionDAO;
+import util.ManejoSesion;
 
+import model.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
@@ -24,15 +26,6 @@ public class EventosActivosController {
 
     private ParticipacionDAO participacionDAO;
 
-    /*
-     * Usuario temporal
-     */
-
-    private int idParticipante = 1;
-
-    /*
-     * Inicialización automática
-     */
 
     public void initialize() {
 
@@ -45,10 +38,6 @@ public class EventosActivosController {
         cargarEventos();
     }
 
-    /*
-     * Carga eventos activos
-     */
-
     private void cargarEventos() {
 
         listEventos
@@ -60,9 +49,6 @@ public class EventosActivosController {
                 );
     }
 
-    /*
-     * Participar en evento
-     */
 
     @FXML
     public void handleParticipar() {
@@ -81,11 +67,14 @@ public class EventosActivosController {
             return;
         }
 
+        Usuario usuario =
+                ManejoSesion.getUsuarioActual();
+
         boolean ok =
                 participacionDAO
                         .participar(
 
-                                idParticipante,
+                                usuario.getId(),
 
                                 seleccionado.getIdEvento()
                         );
@@ -97,10 +86,6 @@ public class EventosActivosController {
             );
         }
     }
-
-    /*
-     * Volver al dashboard
-     */
 
     @FXML
     public void handleVolver() {
@@ -141,9 +126,6 @@ public class EventosActivosController {
         }
     }
 
-    /*
-     * Alerts
-     */
 
     private void mostrarError(
             String mensaje

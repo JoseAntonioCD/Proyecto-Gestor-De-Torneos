@@ -1,7 +1,9 @@
 package controller;
 
 import DAO.ParticipacionDAO;
+import util.ManejoSesion;
 
+import model.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
@@ -20,16 +22,6 @@ public class HistorialController {
 
     private ParticipacionDAO participacionDAO;
 
-    /*
-     * Usuario temporal
-     */
-
-    private int idParticipante = 1;
-
-    /*
-     * Inicialización automática
-     */
-
     public void initialize() {
 
         participacionDAO =
@@ -38,11 +30,10 @@ public class HistorialController {
         cargarHistorial();
     }
 
-    /*
-     * Carga historial completo
-     */
-
     private void cargarHistorial() {
+
+        Usuario usuario =
+                ManejoSesion.getUsuarioActual();
 
         listHistorial
                 .getItems()
@@ -50,14 +41,11 @@ public class HistorialController {
 
                         participacionDAO
                                 .getHistorialCompleto(
-                                        idParticipante
+
+                                        usuario.getId()
                                 )
                 );
     }
-
-    /*
-     * Volver dashboard
-     */
 
     @FXML
     public void handleVolver() {

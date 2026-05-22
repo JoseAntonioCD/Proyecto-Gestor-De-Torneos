@@ -2,18 +2,21 @@ package controller;
 
 import DAO.UsuarioDAO;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import model.EntidadPromotora;
+import model.Participante;
 import model.Usuario;
 
-import java.sql.Connection;
-
 public class RegistroController {
-    private Connection conn;
+
     @FXML
     private TextField txtNombre;
 
     @FXML
-    private TextField txtEmail;
+    private TextField txtCorreo;
 
     @FXML
     private PasswordField txtPassword;
@@ -23,6 +26,7 @@ public class RegistroController {
 
     private UsuarioDAO usuarioDAO;
 
+    @FXML
     public void initialize() {
 
         usuarioDAO = new UsuarioDAO();
@@ -36,51 +40,153 @@ public class RegistroController {
     @FXML
     public void handleRegister() {
 
-        String nombre = txtNombre.getText();
-        String email = txtEmail.getText();
-        String password = txtPassword.getText();
-        String tipo = comboTipo.getValue();
+        System.out.println(
+                "Botón registrar pulsado"
+        );
+
+        String nombre =
+                txtNombre.getText();
+
+        String correo =
+                txtCorreo.getText();
+
+        String password =
+                txtPassword.getText();
+
+        String tipo =
+                comboTipo.getValue();
 
         if(nombre.isEmpty() ||
-                email.isEmpty() ||
+                correo.isEmpty() ||
                 password.isEmpty() ||
                 tipo == null) {
 
-            mostrarError("Completa todos los campos");
+            mostrarError(
+                    "Completa todos los campos"
+            );
+
             return;
         }
 
-        Usuario usuario = new Usuario(
-                0,
-                nombre,
-                email,
-                password,
-                tipo
-        ) {};
+        Usuario usuario;
 
-        boolean registrado = usuarioDAO.registrarUsuario(usuario);
 
-        if(registrado) {
+        if(tipo.equals("PARTICIPANTE")) {
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-            alert.setContentText("Usuario registrado correctamente");
-
-            alert.showAndWait();
+            usuario =
+                    new Participante();
 
         } else {
 
-            mostrarError("No se pudo registrar");
+            usuario =
+                    new EntidadPromotora();
+        }
+
+        usuario.setNombre(nombre);
+
+        usuario.setEmail(correo);
+
+        usuario.setPassword(password);
+
+        usuario.setTipo(tipo);
+
+        boolean registrado =
+                usuarioDAO.registrarUsuario(
+                        usuario
+                );
+
+        if(registrado) {
+
+            mostrarInfo(
+                    "Usuario registrado correctamente"
+            );
+
+            limpiarCampos();
+
+        } else {
+
+            mostrarError(
+                    "No se pudo registrar usuario"
+            );
         }
     }
 
     private void mostrarError(String mensaje) {
 
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.ERROR
+                );
 
-        alert.setHeaderText("Error");
+        alert.setTitle("Error");
+
+        alert.setHeaderText(null);
+
         alert.setContentText(mensaje);
 
         alert.showAndWait();
+    }
+
+    private void mostrarInfo(String mensaje) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+
+        alert.setTitle("Información");
+
+        alert.setHeaderText(null);
+
+        alert.setContentText(mensaje);
+
+        alert.showAndWait();
+    }
+
+
+    private void limpiarCampos() {
+
+        txtNombre.clear();
+
+        txtCorreo.clear();
+
+        txtPassword.clear();
+
+        comboTipo.setValue(null);
+    }
+
+    @FXML
+    public void handleVolverLogin() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass().getResource(
+                                    "/vista/inicioSesion.fxml"
+                            )
+                    );
+
+            Scene scene =
+                    new Scene(
+                            loader.load()
+                    );
+
+            Stage stage =
+                    (Stage) txtNombre
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(scene);
+
+            stage.show();
+
+        }
+
+        catch(Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

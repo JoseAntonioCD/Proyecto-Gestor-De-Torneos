@@ -1,43 +1,53 @@
 package app;
 
+import dataAccess.ConnectionBD;
 import javafx.application.Application;
-
 import javafx.fxml.FXMLLoader;
-
 import javafx.scene.Scene;
-
 import javafx.stage.Stage;
 
-public class MainAppTest
-        extends Application {
+public class MainAppTest extends Application {
 
     @Override
-    public void start(Stage stage)
-            throws Exception {
+    public void start(Stage stage) {
 
-        FXMLLoader loader =
-                new FXMLLoader(
+        try {
 
-                        getClass()
-                                .getResource(
-                                        "/vista/inicioSesion.fxml"
-                                )
-                );
+            ConnectionBD.getConnection();
 
-        Scene scene =
-                new Scene(loader.load());
+            FXMLLoader loader =
+                    new FXMLLoader(
 
-        stage.setScene(scene);
+                            getClass().getResource(
+                                    "/vista/inicioSesion.fxml"
+                            )
+                    );
 
-        stage.setTitle(
-                "Gestor de Torneos"
-        );
+            Scene scene =
+                    new Scene(
+                            loader.load()
+                    );
 
-        stage.setMinWidth(900);
+            stage.setTitle(
+                    "Gestor de Torneos"
+            );
 
-        stage.setMinHeight(600);
+            stage.setScene(scene);
 
-        stage.show();
+            stage.setResizable(true);
+
+            stage.show();
+
+        }
+
+        catch (Exception e) {
+
+            System.out.println(
+                    "Error al iniciar aplicación"
+            );
+
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

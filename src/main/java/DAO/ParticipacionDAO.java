@@ -15,15 +15,10 @@ import java.util.List;
 
 public class ParticipacionDAO {
 
-    /*
-     * Conexión MySQL
-     */
 
     private Connection conn;
 
-    /*
-     * Constructor
-     */
+
 
     public ParticipacionDAO() {
 
@@ -31,12 +26,7 @@ public class ParticipacionDAO {
                 ConnectionBD.getConnection();
     }
 
-    /*
-     * PARTICIPAR EN EVENTO
-     *
-     * Inserta relación N:M
-     * entre participante y evento
-     */
+
 
     public boolean participar(
             int idParticipante,
@@ -80,10 +70,7 @@ public class ParticipacionDAO {
         return false;
     }
 
-    /*
-     * Obtiene los últimos
-     * eventos participados
-     */
+
 
     public List<Evento>
     getUltimosEventosParticipados(
@@ -155,9 +142,6 @@ public class ParticipacionDAO {
         return eventos;
     }
 
-    /*
-     * Historial completo
-     */
 
     public List<Evento>
     getHistorialCompleto(

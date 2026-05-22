@@ -1,7 +1,13 @@
 package controller;
 
 import DAO.EventoDAO;
+import javafx.fxml.FXMLLoader;
 
+import javafx.scene.Scene;
+
+import javafx.stage.Stage;
+
+import util.ManejoSesion;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ListView;
@@ -36,26 +42,110 @@ public class DashboardPromotorController {
 
     private void cargarEventos() {
 
-        /*
-         * Todos los eventos
-         */
+        int idPromotor =
+
+                ManejoSesion
+                        .getUsuarioActual()
+                        .getId();
 
         listTodos
                 .getItems()
                 .addAll(
 
                         eventoDAO
-                                .getEventosPromotor(1)
+                                .getEventosPromotor(
+                                        idPromotor
+                                )
                 );
-
-
 
         listActivos
                 .getItems()
                 .addAll(
 
                         eventoDAO
-                                .getEventosActivosPromotor(1)
+                                .getEventosActivosPromotor(
+                                        idPromotor
+                                )
                 );
+    }
+    @FXML
+    public void handleLogout() {
+
+        ManejoSesion.logout();
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass()
+                                    .getResource(
+                                            "/vista/inicioSesion.fxml"
+                                    )
+                    );
+
+            Scene scene =
+                    new Scene(loader.load());
+
+            Stage stage =
+                    new Stage();
+
+            stage.setScene(scene);
+
+            stage.setTitle(
+                    "Inicio de sesión"
+            );
+
+            stage.show();
+
+
+            listTodos
+                    .getScene()
+                    .getWindow()
+                    .hide();
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleCrearEvento() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+
+                            getClass()
+                                    .getResource(
+                                            "/vista/crearEvento.fxml"
+                                    )
+                    );
+
+            Scene scene =
+                    new Scene(loader.load());
+
+            Stage stage =
+                    new Stage();
+
+            stage.setScene(scene);
+
+            stage.setTitle(
+                    "Crear Evento"
+            );
+
+            stage.show();
+
+            listTodos
+                    .getScene()
+                    .getWindow()
+                    .hide();
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

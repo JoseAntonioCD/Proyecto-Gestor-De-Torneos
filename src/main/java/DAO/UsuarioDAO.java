@@ -1,39 +1,72 @@
 package DAO;
 
 import dataAccess.ConnectionBD;
+
 import model.EntidadPromotora;
 import model.Participante;
 import model.Usuario;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UsuarioDAO {
 
+
+
     private Connection conn;
 
+
+
     public UsuarioDAO() {
-        conn = ConnectionBD.getConnection();
+
+        conn =
+                ConnectionBD.getConnection();
     }
 
-    public Usuario login(String email, String password) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, email);
-            stmt.setString(2, password);
+    public Usuario login(
+            String email,
+            String password
+    ) {
 
-            ResultSet rs = stmt.executeQuery();
+        String sql = """
+                SELECT *
+                FROM usuarios
+                WHERE email = ?
+                AND password = ?
+                """;
 
-            if (rs.next()) {
+        try(
+
+                PreparedStatement stmt =
+                        conn.prepareStatement(sql)
+
+        ) {
+
+            stmt.setString(
+                    1,
+                    email
+            );
+
+            stmt.setString(
+                    2,
+                    password
+            );
+
+            ResultSet rs =
+                    stmt.executeQuery();
+
+            if(rs.next()) {
 
                 String tipo =
                         rs.getString("tipo");
 
-                /*
-                 * Si es participante
-                 */
-
-                if (tipo.equals("PARTICIPANTE")) {
+                if(tipo.equalsIgnoreCase(
+                        "PARTICIPANTE"
+                )) {
 
                     Participante participante =
                             new Participante();
@@ -54,16 +87,17 @@ public class UsuarioDAO {
                             rs.getString("password")
                     );
 
-                    participante.setTipo(tipo);
+                    participante.setTipo(
+                            tipo
+                    );
 
                     return participante;
                 }
 
-                /*
-                 * Si es promotor
-                 */
 
-                else {
+                else if(tipo.equalsIgnoreCase(
+                        "PROMOTOR"
+                )) {
 
                     EntidadPromotora promotor =
                             new EntidadPromotora();
@@ -84,13 +118,15 @@ public class UsuarioDAO {
                             rs.getString("password")
                     );
 
-                    promotor.setTipo(tipo);
+                    promotor.setTipo(
+                            tipo
+                    );
 
                     return promotor;
                 }
             }
 
-        } catch (SQLException e) {
+        } catch(SQLException e) {
 
             e.printStackTrace();
         }
@@ -98,23 +134,17 @@ public class UsuarioDAO {
         return null;
     }
 
-    /*
-     * REGISTRO
-     *
-     * Inserta usuarios nuevos
-     */
-
     public boolean registrarUsuario(Usuario usuario) {
 
         String sql = """
-                INSERT INTO usuarios(
-                    nombre,
-                    email,
-                    password,
-                    tipo
-                )
-                VALUES(?,?,?,?)
-                """;
+            INSERT INTO usuarios(
+                nombre,
+                email,
+                password,
+                tipo
+            )
+            VALUES(?,?,?,?)
+            """;
 
         try (PreparedStatement stmt =
                      conn.prepareStatement(sql)) {
@@ -139,11 +169,14 @@ public class UsuarioDAO {
                     usuario.getTipo()
             );
 
-            stmt.executeUpdate();
+            int filas =
+                    stmt.executeUpdate();
 
-            return true;
+            return filas > 0;
 
-        } catch (SQLException e) {
+        }
+
+        catch (SQLException e) {
 
             e.printStackTrace();
         }

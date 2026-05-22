@@ -7,6 +7,7 @@ public abstract class Usuario {
     protected String email;
     protected String password;
     private String tipo;
+    private String rol;
 
     public Usuario() {}
     public Usuario(int id, String nombre, String email, String password) {
@@ -23,7 +24,7 @@ public abstract class Usuario {
         this.tipo = tipo;
     }
 
-    // Getters y setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -39,7 +40,10 @@ public abstract class Usuario {
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
 
-    // Métodos comunes
+    public String getRol() {return rol; }
+    public void setRol(String rol) {this.rol = rol; }
+
+
     public boolean login(String email, String password) {
         return this.email.equals(email) && this.password.equals(password);
     }

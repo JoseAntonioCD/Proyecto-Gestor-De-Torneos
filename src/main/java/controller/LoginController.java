@@ -1,19 +1,13 @@
 package controller;
 
 import DAO.UsuarioDAO;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-
 import javafx.scene.Scene;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import model.Usuario;
+import util.ManejoSesion;
 
 public class LoginController {
 
@@ -23,21 +17,18 @@ public class LoginController {
     @FXML
     private PasswordField txtPassword;
 
+    @FXML
+    private Button btnRegistro;
+
     private UsuarioDAO usuarioDAO;
 
-    /*
-     * Se ejecuta automáticamente
-     * al cargar el FXML
-     */
 
+    @FXML
     public void initialize() {
 
         usuarioDAO = new UsuarioDAO();
     }
 
-    /*
-     * BOTÓN LOGIN
-     */
 
     @FXML
     public void handleLogin() {
@@ -47,10 +38,6 @@ public class LoginController {
 
         String password =
                 txtPassword.getText();
-
-        /*
-         * Validación básica
-         */
 
         if(email.isEmpty() ||
                 password.isEmpty()) {
@@ -62,40 +49,26 @@ public class LoginController {
             return;
         }
 
-        /*
-         * Intento login
-         */
-
         Usuario usuario =
                 usuarioDAO.login(
                         email,
                         password
                 );
 
-        /*
-         * Si no existe
-         */
-
         if(usuario == null) {
 
             mostrarError(
-                    "Email o contraseña incorrectos"
+                    "Usuario o contraseña incorrectos"
             );
 
             return;
         }
 
-        /*
-         * Abrir dashboard correcto
-         */
+        ManejoSesion.login(usuario);
 
         abrirDashboard(usuario);
     }
 
-    /*
-     * Detecta el tipo de usuario
-     * y abre la ventana adecuada
-     */
 
     private void abrirDashboard(
             Usuario usuario
@@ -105,36 +78,25 @@ public class LoginController {
 
             FXMLLoader loader;
 
-            /*
-             * Participante
-             */
-
             if(usuario.getTipo()
-                    .equals("PARTICIPANTE")) {
+                    .equalsIgnoreCase(
+                            "PROMOTOR"
+                    )) {
 
                 loader =
                         new FXMLLoader(
-
-                                getClass()
-                                        .getResource(
-                                                "/view/dashboardParticipante.fxml"
-                                        )
+                                getClass().getResource(
+                                        "/vista/dashboardPromotor.fxml"
+                                )
                         );
-            }
 
-            /*
-             * Promotor
-             */
-
-            else {
+            } else {
 
                 loader =
                         new FXMLLoader(
-
-                                getClass()
-                                        .getResource(
-                                                "/view/dashboardPromotor.fxml"
-                                        )
+                                getClass().getResource(
+                                        "/vista/dashboardParticipante.fxml"
+                                )
                         );
             }
 
@@ -145,45 +107,42 @@ public class LoginController {
 
             Stage stage =
                     new Stage();
-
-            stage.setScene(scene);
 
             stage.setTitle(
                     "Gestor de Torneos"
             );
 
-            stage.show();
+            stage.setScene(scene);
 
-            /*
-             * Cierra login
-             */
+            stage.show();
 
             txtEmail.getScene()
                     .getWindow()
                     .hide();
 
-        } catch(Exception e) {
+        }
+
+        catch(Exception e) {
 
             e.printStackTrace();
         }
     }
 
-    /*
-     * Abrir registro
-     */
 
     @FXML
-    public void abrirRegistro() {
+    public void handleRegistro() {
+
+        System.out.println(
+                "Botón registro pulsado"
+        );
 
         try {
 
             FXMLLoader loader =
                     new FXMLLoader(
-
-                            getClass()
-                                    .getResource(
-                                            "/view/register.fxml"
-                                    )
+                            getClass().getResource(
+                                    "/vista/registro.fxml"
+                            )
                     );
 
             Scene scene =
@@ -192,25 +151,21 @@ public class LoginController {
                     );
 
             Stage stage =
-                    new Stage();
+                    (Stage) btnRegistro
+                            .getScene()
+                            .getWindow();
 
             stage.setScene(scene);
 
-            stage.setTitle(
-                    "Registro"
-            );
-
             stage.show();
 
-        } catch(Exception e) {
+        }
+
+        catch(Exception e) {
 
             e.printStackTrace();
         }
     }
-
-    /*
-     * Alerts de error
-     */
 
     private void mostrarError(
             String mensaje
@@ -221,9 +176,11 @@ public class LoginController {
                         Alert.AlertType.ERROR
                 );
 
-        alert.setHeaderText(
+        alert.setTitle(
                 "Error"
         );
+
+        alert.setHeaderText(null);
 
         alert.setContentText(
                 mensaje

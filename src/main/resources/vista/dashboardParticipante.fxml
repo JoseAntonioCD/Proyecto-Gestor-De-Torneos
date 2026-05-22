@@ -81,14 +81,17 @@
               style="-fx-padding: 20px;">
 
             <Button text="Ver eventos activos"
+                    onAction="#handleEventosActivos"
                     prefWidth="180"
                     prefHeight="40"/>
 
             <Button text="Historial"
+                    onAction="#handleHistorial"
                     prefWidth="180"
                     prefHeight="40"/>
 
             <Button text="Cerrar sesión"
+                    onAction="#handleLogout"
                     prefWidth="180"
                     prefHeight="40"/>
 

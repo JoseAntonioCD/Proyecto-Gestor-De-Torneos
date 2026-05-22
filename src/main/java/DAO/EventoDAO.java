@@ -76,90 +76,106 @@ public class EventoDAO {
             }
 
         } catch(SQLException e) {
+            System.out.println(
+                    e.getMessage()
+            );
+
             e.printStackTrace();
         }
 
         return eventos;
     }
 
-    private Evento construirEvento(ResultSet rs)
-            throws SQLException {
+    private Evento construirEvento(
+            ResultSet rs
+    ) throws SQLException {
 
-        EntidadPromotora entidad =
-                new EntidadPromotora();
+        Evento evento =
+                new Evento();
 
-        entidad.setId(
-                rs.getInt("idEntidad")
+        evento.setIdEvento(
+                rs.getInt("idEvento")
         );
 
-        Localizacion localizacion =
-                new Localizacion();
-
-        localizacion.setIdLocalizacion(
-                rs.getInt("idLocalizacion")
+        evento.setNombre(
+                rs.getString("nombre")
         );
 
-        return new Evento(
+        evento.setDescripcion(
+                rs.getString("descripcion")
+        );
 
-                rs.getInt("idEvento"),
+        evento.setEstado(
+                rs.getString("estado")
+        );
 
-                rs.getString("nombre"),
-
-                rs.getString("descripcion"),
-
-                rs.getString("estado"),
+        evento.setFechaEvento(
 
                 rs.getDate("fechaEvento")
-                        .toLocalDate(),
-
-                entidad,
-
-                localizacion
+                        .toLocalDate()
         );
+
+        return evento;
     }
 
-    public boolean insertarEvento(Evento evento, int idEntidad) {
+    public boolean insertarEvento(
+            Evento evento,
+            int idEntidad
+    ) {
 
         String sql = """
-            INSERT INTO eventos(
-                nombre,
-                descripcion,
-                estado,
-                fechaEvento,
-                idEntidad,
-                idLocalizacion
-            )
-            VALUES(?,?,?,?,?,?)
-            """;
+        INSERT INTO eventos(
+            nombre,
+            descripcion,
+            estado,
+            fechaEvento,
+            idEntidad
+        )
+        VALUES(?,?,?,?,?)
+        """;
 
-        try(PreparedStatement stmt =
-                    conn.prepareStatement(sql)) {
+        try(
 
-            stmt.setString(1, evento.getNombre());
-            stmt.setString(2, evento.getDescripcion());
-            stmt.setString(3, evento.getEstado());
+                PreparedStatement stmt =
+                        conn.prepareStatement(sql)
+
+        ) {
+
+            stmt.setString(
+                    1,
+                    evento.getNombre()
+            );
+
+            stmt.setString(
+                    2,
+                    evento.getDescripcion()
+            );
+
+            stmt.setString(
+                    3,
+                    evento.getEstado()
+            );
 
             stmt.setDate(
                     4,
-                    Date.valueOf(evento.getFechaEvento())
+                    Date.valueOf(
+                            evento.getFechaEvento()
+                    )
             );
 
             stmt.setInt(
                     5,
-                    evento.getEntidad().getId()
-            );
-
-            stmt.setInt(
-                    6,
-                    evento.getLocalizacion()
-                            .getIdLocalizacion()
+                    idEntidad
             );
 
             stmt.executeUpdate();
 
             return true;
 
-        } catch(SQLException e) {
+        }
+
+        catch(SQLException e) {
+
             e.printStackTrace();
         }
 

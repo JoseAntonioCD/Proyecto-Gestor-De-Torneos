@@ -5,30 +5,58 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionBD {
-    private static final String FILE = "connection.xml";
-    private static Connection con;
-    //1.Primer paso de Singleton: crear instancia de la propia clase
-    private static ConnectionBD _instance;
 
-    //2. Constructor privado
-    private ConnectionBD() {
-        ConnectionProperties properties = XMLManager.readXML(new ConnectionProperties(), FILE);
-        try{
-            con = DriverManager.getConnection(properties.getURL(), properties.getUser(), properties.getPassword());
 
-        }catch(SQLException e){
-            e.printStackTrace();
-            con = null;
+    private static Connection conn;
+
+
+    public static Connection getConnection() {
+
+
+        if(conn == null) {
+
+            try {
+
+
+                Class.forName(
+                        "com.mysql.cj.jdbc.Driver"
+                );
+
+                conn =
+                        DriverManager.getConnection(
+
+                                "jdbc:mysql://localhost:3307/gestor_de_torneos",
+
+                                "root",
+
+                                "1029384756aSdW"
+                        );
+
+                System.out.println(
+                        "Conexión establecida correctamente"
+                );
+
+            }
+
+            catch(ClassNotFoundException e) {
+
+                System.out.println(
+                        "Driver MySQL no encontrado"
+                );
+
+                e.printStackTrace();
+            }
+
+            catch(SQLException e) {
+
+                System.out.println(
+                        "Error al conectar con MySQL"
+                );
+
+                e.printStackTrace();
+            }
         }
 
-    }
-
-    //3.Método público que me devuelve la instancia
-
-    public static Connection getConnection(){
-        if(_instance==null){
-            _instance = new ConnectionBD();
-        }
-        return con;
+        return conn;
     }
 }
