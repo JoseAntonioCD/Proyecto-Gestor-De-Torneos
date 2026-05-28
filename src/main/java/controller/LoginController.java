@@ -8,6 +8,14 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Usuario;
 import util.ManejoSesion;
+import controller.DashboardPromotorController;
+import controller.DashboardParticipanteController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import model.EntidadPromotora;
+import model.Usuario;
 
 public class LoginController {
 
@@ -29,7 +37,9 @@ public class LoginController {
         usuarioDAO = new UsuarioDAO();
     }
 
-
+    /**
+     * Método que maneja el proceso de Login
+     */
     @FXML
     public void handleLogin() {
 
@@ -69,7 +79,10 @@ public class LoginController {
         abrirDashboard(usuario);
     }
 
-
+    /**
+     * Método que abre el dashboard correspondiente del usuario que acaba de iniciar sesión
+     * @param usuario
+     */
     private void abrirDashboard(
             Usuario usuario
     ) {
@@ -78,10 +91,7 @@ public class LoginController {
 
             FXMLLoader loader;
 
-            if(usuario.getTipo()
-                    .equalsIgnoreCase(
-                            "PROMOTOR"
-                    )) {
+            if(usuario instanceof EntidadPromotora) {
 
                 loader =
                         new FXMLLoader(
@@ -89,6 +99,25 @@ public class LoginController {
                                         "/vista/dashboardPromotor.fxml"
                                 )
                         );
+
+                Parent root =
+                        loader.load();
+
+                DashboardPromotorController controller =
+                        loader.getController();
+
+                controller.setPromotorActual(
+                        (EntidadPromotora) usuario
+                );
+
+                Stage stage =
+                        new Stage();
+
+                stage.setScene(
+                        new Scene(root)
+                );
+
+                stage.show();
 
             } else {
 
@@ -98,37 +127,40 @@ public class LoginController {
                                         "/vista/dashboardParticipante.fxml"
                                 )
                         );
+
+                Parent root =
+                        loader.load();
+
+                DashboardParticipanteController controller =
+                        loader.getController();
+
+                controller.setUsuarioActual(usuario);
+
+                Stage stage =
+                        new Stage();
+
+                stage.setScene(
+                        new Scene(root)
+                );
+
+                stage.show();
             }
 
-            Scene scene =
-                    new Scene(
-                            loader.load()
-                    );
+            Stage loginStage =
+                    (Stage) txtEmail.getScene()
+                            .getWindow();
 
-            Stage stage =
-                    new Stage();
+            loginStage.close();
 
-            stage.setTitle(
-                    "Gestor de Torneos"
-            );
-
-            stage.setScene(scene);
-
-            stage.show();
-
-            txtEmail.getScene()
-                    .getWindow()
-                    .hide();
-
-        }
-
-        catch(Exception e) {
+        } catch(Exception e) {
 
             e.printStackTrace();
         }
     }
 
-
+    /**
+     * Método que abre la página de registro al darle al botón de Registro
+     */
     @FXML
     public void handleRegistro() {
 
@@ -167,6 +199,10 @@ public class LoginController {
         }
     }
 
+    /**
+     * Método que muestra un mensaje de error en caso de que el usuario cometa algún fallo en el login
+     * @param mensaje Mensaje de error
+     */
     private void mostrarError(
             String mensaje
     ) {

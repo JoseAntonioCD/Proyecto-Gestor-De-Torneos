@@ -2,29 +2,41 @@ package controller;
 
 import DAO.EventoDAO;
 import DAO.ParticipacionDAO;
-import util.ManejoSesion;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import model.Usuario;
+
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+
+import javafx.scene.Scene;
+
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+
+import javafx.stage.Stage;
+
 import model.Evento;
+import model.Usuario;
+
+import util.ManejoSesion;
+
+import java.io.IOException;
+import java.util.List;
 
 public class DashboardParticipanteController {
 
     @FXML
-    private ListView<Evento> listParticipados;
-
+    private ListView<Evento> listEventosActivos;
 
     @FXML
-    private ListView<Evento> listActivos;
-
+    private ListView<Evento> listMisEventos;
 
     private EventoDAO eventoDAO;
 
     private ParticipacionDAO participacionDAO;
 
+    private Usuario usuarioActual;
+
+    @FXML
     public void initialize() {
 
         eventoDAO =
@@ -33,103 +45,206 @@ public class DashboardParticipanteController {
         participacionDAO =
                 new ParticipacionDAO();
 
-        cargarEventos();
+        usuarioActual =
+                ManejoSesion.getUsuarioActual();
+
+        if(usuarioActual != null) {
+
+            cargarEventos();
+        }
+
+        listEventosActivos.setOnMouseClicked(event -> {
+
+            if(event.getClickCount() == 2) {
+
+                Evento eventoSeleccionado =
+                        listEventosActivos
+                                .getSelectionModel()
+                                .getSelectedItem();
+
+                if(eventoSeleccionado != null) {
+
+                    abrirDetalleEvento(
+                            eventoSeleccionado
+                    );
+
+                    listMisEventos.setItems(
+
+                            FXCollections.observableArrayList(
+
+                                    eventoDAO.getEventosParticipados(
+                                            usuarioActual.getId()
+                                    )
+                            )
+                    );
+                }
+            }
+        });
+
+        listMisEventos.setOnMouseClicked(event -> {
+
+            if(event.getClickCount() == 2) {
+
+                Evento eventoSeleccionado =
+                        listMisEventos
+                                .getSelectionModel()
+                                .getSelectedItem();
+
+                if(eventoSeleccionado != null) {
+
+                    abrirDetalleEvento(
+                            eventoSeleccionado
+                    );
+
+                    listMisEventos.setItems(
+
+                            FXCollections.observableArrayList(
+
+                                    eventoDAO.getEventosParticipados(
+                                            usuarioActual.getId()
+                                    )
+                            )
+                    );
+                }
+            }
+        });
     }
+
+    /**
+     * Método que recibe a un usuario
+     * @param usuario usuario que inicia sesión
+     */
+
+    public void setUsuarioActual(
+            Usuario usuario
+    ) {
+
+        this.usuarioActual =
+                usuario;
+
+        if(usuarioActual != null) {
+
+            cargarEventos();
+        }
+    }
+
+    /**
+     * Método que se encarga de actualizar la sección de Mis Eventos
+     */
+
+    public void recargarMisEventos() {
+
+        if(usuarioActual == null) {
+
+            return;
+        }
+
+        listMisEventos.setItems(
+
+                FXCollections.observableArrayList(
+
+                        eventoDAO.getEventosParticipados(
+                                usuarioActual.getId()
+                        )
+                )
+        );
+    }
+
+    /**
+     * Método que se encarga de cargar los eventos, tanto activos como los de la sección
+     * de Mis Eventos
+     */
 
     private void cargarEventos() {
 
-        Usuario usuario =
-                ManejoSesion.getUsuarioActual();
+        if(usuarioActual == null) {
 
-        int idUsuario =
-                usuario.getId();
+            return;
+        }
 
-        /*
-         * Eventos activos
-         */
+        listEventosActivos.setItems(
 
-        listActivos
-                .getItems()
-                .addAll(
+                FXCollections.observableArrayList(
 
-                        eventoDAO
-                                .getEventosActivos()
-                );
+                        eventoDAO.getEventosActivos()
+                )
+        );
 
-        listParticipados
-                .getItems()
-                .addAll(
-
-                        participacionDAO
-                                .getUltimosEventosParticipados(
-                                        idUsuario
-                                )
-                );
+        recargarMisEventos();
     }
 
-    @FXML
-    public void handleLogout() {
+    /**
+     * Método que abre la ventana Detalles Evento cargando el evento seleccionado
+     * @param evento Evento seleccionado
+     */
 
-
-        ManejoSesion.logout();
+    private void abrirDetalleEvento(
+            Evento evento
+    ) {
 
         try {
 
-            /*
-             * Abrir login
-             */
-
             FXMLLoader loader =
                     new FXMLLoader(
-
-                            getClass()
-                                    .getResource(
-                                            "/vista/inicioSesion.fxml"
-                                    )
+                            getClass().getResource(
+                                    "/vista/detalleEvento.fxml"
+                            )
                     );
 
             Scene scene =
                     new Scene(loader.load());
+
+            DetalleEventoController controller =
+                    loader.getController();
+
+            controller.setEvento(evento);
 
             Stage stage =
                     new Stage();
 
-            stage.setScene(scene);
-
             stage.setTitle(
-                    "Inicio de sesión"
+                    "Detalle Evento"
             );
+
+            stage.setScene(scene);
 
             stage.show();
 
-
-            listActivos
-                    .getScene()
-                    .getWindow()
-                    .hide();
-
-        } catch(Exception e) {
+        } catch(IOException e) {
 
             e.printStackTrace();
+
+            mostrarError(
+                    "No se pudo abrir el detalle"
+            );
         }
     }
 
+    /**
+     * Método que abre la página de Eventos Activos
+     */
+
     @FXML
-    public void handleEventosActivos() {
+    public void handleVerEventosActivos() {
 
         try {
 
             FXMLLoader loader =
                     new FXMLLoader(
-
-                            getClass()
-                                    .getResource(
-                                            "/vista/eventosActivos.fxml"
-                                    )
+                            getClass().getResource(
+                                    "/vista/eventosActivos.fxml"
+                            )
                     );
 
             Scene scene =
                     new Scene(loader.load());
+
+            EventosActivosController controller =
+                    loader.getController();
+
+            controller.setUsuarioActual(
+                    usuarioActual
+            );
 
             Stage stage =
                     new Stage();
@@ -142,53 +257,75 @@ public class DashboardParticipanteController {
 
             stage.show();
 
-            listActivos
-                    .getScene()
-                    .getWindow()
-                    .hide();
-
-        } catch(Exception e) {
+        } catch(IOException e) {
 
             e.printStackTrace();
         }
     }
 
+
+    /**
+     * Método que permite cerrar sesión, volviendo a la pantalla de inicioSesion
+     */
+
     @FXML
-    public void handleHistorial() {
+    public void handleLogout() {
+
+        ManejoSesion.logout();
 
         try {
 
             FXMLLoader loader =
                     new FXMLLoader(
-
-                            getClass()
-                                    .getResource(
-                                            "/vista/historial.fxml"
-                                    )
+                            getClass().getResource(
+                                    "/vista/inicioSesion.fxml"
+                            )
                     );
 
             Scene scene =
                     new Scene(loader.load());
 
             Stage stage =
-                    new Stage();
+                    (Stage) listEventosActivos
+                            .getScene()
+                            .getWindow();
 
             stage.setScene(scene);
 
             stage.setTitle(
-                    "Historial"
+                    "Inicio Sesión"
             );
 
             stage.show();
 
-            listActivos
-                    .getScene()
-                    .getWindow()
-                    .hide();
-
-        } catch(Exception e) {
+        } catch(IOException e) {
 
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Método que lanza un mensaje en caso de que ocurra un error
+     * @param mensaje Mensaje de error
+     */
+
+    private void mostrarError(
+            String mensaje
+    ) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.ERROR
+                );
+
+        alert.setHeaderText(
+                "Error"
+        );
+
+        alert.setContentText(
+                mensaje
+        );
+
+        alert.showAndWait();
     }
 }

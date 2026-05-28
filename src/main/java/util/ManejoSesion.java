@@ -13,19 +13,13 @@ public class ManejoSesion {
         usuarioActual = usuario;
     }
 
-    public static Usuario
-    getUsuarioActual() {
-
-        return usuarioActual;
-    }
-
     public static void logout() {
 
         usuarioActual = null;
     }
 
-    public static boolean isLogged() {
+    public static Usuario getUsuarioActual() {
 
-        return usuarioActual != null;
+        return usuarioActual;
     }
 }

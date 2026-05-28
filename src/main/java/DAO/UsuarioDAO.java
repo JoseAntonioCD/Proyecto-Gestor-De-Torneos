@@ -1,7 +1,6 @@
 package DAO;
 
 import dataAccess.ConnectionBD;
-
 import model.EntidadPromotora;
 import model.Participante;
 import model.Usuario;
@@ -12,20 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UsuarioDAO {
-
-
-
     private Connection conn;
-
-
 
     public UsuarioDAO() {
 
-        conn =
-                ConnectionBD.getConnection();
+        conn = ConnectionBD.getConnection();
     }
 
-
+    /*
+     * LOGIN
+     */
 
     public Usuario login(
             String email,
@@ -46,15 +41,9 @@ public class UsuarioDAO {
 
         ) {
 
-            stmt.setString(
-                    1,
-                    email
-            );
+            stmt.setString(1, email);
 
-            stmt.setString(
-                    2,
-                    password
-            );
+            stmt.setString(2, password);
 
             ResultSet rs =
                     stmt.executeQuery();
@@ -64,66 +53,50 @@ public class UsuarioDAO {
                 String tipo =
                         rs.getString("tipo");
 
+                Usuario usuario;
+
+                /*
+                 * PARTICIPANTE
+                 */
+
                 if(tipo.equalsIgnoreCase(
                         "PARTICIPANTE"
                 )) {
 
-                    Participante participante =
+                    usuario =
                             new Participante();
 
-                    participante.setId(
-                            rs.getInt("id")
-                    );
+                } else {
 
-                    participante.setNombre(
-                            rs.getString("nombre")
-                    );
+                    /*
+                     * PROMOTOR
+                     */
 
-                    participante.setEmail(
-                            rs.getString("email")
-                    );
-
-                    participante.setPassword(
-                            rs.getString("password")
-                    );
-
-                    participante.setTipo(
-                            tipo
-                    );
-
-                    return participante;
-                }
-
-
-                else if(tipo.equalsIgnoreCase(
-                        "PROMOTOR"
-                )) {
-
-                    EntidadPromotora promotor =
+                    usuario =
                             new EntidadPromotora();
-
-                    promotor.setId(
-                            rs.getInt("id")
-                    );
-
-                    promotor.setNombre(
-                            rs.getString("nombre")
-                    );
-
-                    promotor.setEmail(
-                            rs.getString("email")
-                    );
-
-                    promotor.setPassword(
-                            rs.getString("password")
-                    );
-
-                    promotor.setTipo(
-                            tipo
-                    );
-
-                    return promotor;
                 }
+
+                usuario.setId(
+                        rs.getInt("id")
+                );
+
+                usuario.setNombre(
+                        rs.getString("nombre")
+                );
+
+                usuario.setEmail(
+                        rs.getString("email")
+                );
+
+                usuario.setPassword(
+                        rs.getString("password")
+                );
+
+                usuario.setTipo(
+                        tipo
+                );
+
+                return usuario;
             }
 
         } catch(SQLException e) {
@@ -134,20 +107,30 @@ public class UsuarioDAO {
         return null;
     }
 
-    public boolean registrarUsuario(Usuario usuario) {
+    /*
+     * REGISTRO
+     */
+
+    public boolean registrarUsuario(
+            Usuario usuario
+    ) {
 
         String sql = """
-            INSERT INTO usuarios(
-                nombre,
-                email,
-                password,
-                tipo
-            )
-            VALUES(?,?,?,?)
-            """;
+                INSERT INTO usuarios(
+                    nombre,
+                    email,
+                    password,
+                    tipo
+                )
+                VALUES(?,?,?,?)
+                """;
 
-        try (PreparedStatement stmt =
-                     conn.prepareStatement(sql)) {
+        try(
+
+                PreparedStatement stmt =
+                        conn.prepareStatement(sql)
+
+        ) {
 
             stmt.setString(
                     1,
@@ -169,18 +152,102 @@ public class UsuarioDAO {
                     usuario.getTipo()
             );
 
-            int filas =
-                    stmt.executeUpdate();
+            stmt.executeUpdate();
 
-            return filas > 0;
+            return true;
 
-        }
-
-        catch (SQLException e) {
+        } catch(SQLException e) {
 
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    /*
+     * OBTENER USUARIO POR ID
+     */
+
+    public Usuario getUsuarioById(
+            int id
+    ) {
+
+        String sql = """
+        SELECT *
+        FROM usuarios
+        WHERE id = ?
+        """;
+
+        try(
+                PreparedStatement stmt =
+                        conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, id);
+
+            ResultSet rs =
+                    stmt.executeQuery();
+
+            if(rs.next()) {
+
+                String tipo =
+                        rs.getString("tipo");
+
+                /*
+                 * PROMOTOR
+                 */
+
+                if(
+                        tipo.equalsIgnoreCase(
+                                "PROMOTOR"
+                        )
+                ) {
+
+                    EntidadPromotora promotor =
+                            new EntidadPromotora();
+
+                    promotor.setId(
+                            rs.getInt("id")
+                    );
+
+                    promotor.setNombre(
+                            rs.getString("nombre")
+                    );
+
+                    promotor.setEmail(
+                            rs.getString("email")
+                    );
+
+                    return promotor;
+                }
+
+                /*
+                 * PARTICIPANTE
+                 */
+
+                Participante participante =
+                        new Participante();
+
+                participante.setId(
+                        rs.getInt("id")
+                );
+
+                participante.setNombre(
+                        rs.getString("nombre")
+                );
+
+                participante.setEmail(
+                        rs.getString("email")
+                );
+
+                return participante;
+            }
+
+        } catch(SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

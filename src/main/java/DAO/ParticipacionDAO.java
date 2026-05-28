@@ -1,66 +1,50 @@
 package DAO;
 
 import dataAccess.ConnectionBD;
-import model.Evento;
-
-import dataAccess.ConnectionBD;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ParticipacionDAO {
 
-
-    private Connection conn;
-
-
+    private static Connection conn;
 
     public ParticipacionDAO() {
 
-        conn =
-                ConnectionBD.getConnection();
+        conn = ConnectionBD.getConnection();
     }
 
+    /*
+     * PARTICIPAR
+     */
 
-
-    public boolean participar(
-            int idParticipante,
+    public static boolean participar(
+            int idUsuario,
             int idEvento
     ) {
 
+        if(estaApuntado(idUsuario, idEvento)) {
+
+            return false;
+        }
+
         String sql = """
-                INSERT INTO participacion(
-                    idParticipante,
-                    idEvento
-                )
-                VALUES(?,?)
+                INSERT INTO participaciones
+                (idUsuario, idEvento, fechaInscripcion)
+                VALUES (?, ?, CURDATE())
                 """;
 
         try(
-
                 PreparedStatement stmt =
                         conn.prepareStatement(sql)
-
         ) {
 
-            stmt.setInt(
-                    1,
-                    idParticipante
-            );
+            stmt.setInt(1, idUsuario);
 
-            stmt.setInt(
-                    2,
-                    idEvento
-            );
+            stmt.setInt(2, idEvento);
 
-            stmt.executeUpdate();
-
-            return true;
+            return stmt.executeUpdate() > 0;
 
         } catch(SQLException e) {
 
@@ -70,145 +54,76 @@ public class ParticipacionDAO {
         return false;
     }
 
+    /*
+     * DESAPUNTARSE
+     */
 
-
-    public List<Evento>
-    getUltimosEventosParticipados(
-            int idParticipante
+    public static boolean desapuntarse(
+            int idUsuario,
+            int idEvento
     ) {
 
-        List<Evento> eventos =
-                new ArrayList<>();
-
         String sql = """
-                SELECT e.*
-                FROM eventos e
-                JOIN participacion p
-                ON e.idEvento = p.idEvento
-                WHERE p.idParticipante = ?
-                ORDER BY e.fechaEvento DESC
-                LIMIT 3
+                DELETE FROM participaciones
+                WHERE idUsuario = ?
+                AND idEvento = ?
                 """;
 
         try(
-
                 PreparedStatement stmt =
                         conn.prepareStatement(sql)
-
         ) {
 
-            stmt.setInt(
-                    1,
-                    idParticipante
-            );
+            stmt.setInt(1, idUsuario);
 
-            ResultSet rs =
-                    stmt.executeQuery();
+            stmt.setInt(2, idEvento);
 
-            while(rs.next()) {
-
-                Evento evento =
-                        new Evento();
-
-                evento.setIdEvento(
-                        rs.getInt("idEvento")
-                );
-
-                evento.setNombre(
-                        rs.getString("nombre")
-                );
-
-                evento.setDescripcion(
-                        rs.getString("descripcion")
-                );
-
-                evento.setEstado(
-                        rs.getString("estado")
-                );
-
-                evento.setFechaEvento(
-                        rs.getDate("fechaEvento")
-                                .toLocalDate()
-                );
-
-                eventos.add(evento);
-            }
+            return stmt.executeUpdate() > 0;
 
         } catch(SQLException e) {
 
             e.printStackTrace();
         }
 
-        return eventos;
+        return false;
     }
 
+    /*
+     * COMPROBAR SI YA ESTÁ APUNTADO
+     */
 
-    public List<Evento>
-    getHistorialCompleto(
-            int idParticipante
+    public static boolean estaApuntado(
+            int idUsuario,
+            int idEvento
     ) {
 
-        List<Evento> eventos =
-                new ArrayList<>();
-
         String sql = """
-                SELECT e.*
-                FROM eventos e
-                JOIN participacion p
-                ON e.idEvento = p.idEvento
-                WHERE p.idParticipante = ?
-                ORDER BY e.fechaEvento DESC
+                SELECT *
+                FROM participaciones
+                WHERE idUsuario = ?
+                AND idEvento = ?
                 """;
 
         try(
-
                 PreparedStatement stmt =
                         conn.prepareStatement(sql)
-
         ) {
 
-            stmt.setInt(
-                    1,
-                    idParticipante
-            );
+            stmt.setInt(1, idUsuario);
+
+            stmt.setInt(2, idEvento);
 
             ResultSet rs =
                     stmt.executeQuery();
 
-            while(rs.next()) {
-
-                Evento evento =
-                        new Evento();
-
-                evento.setIdEvento(
-                        rs.getInt("idEvento")
-                );
-
-                evento.setNombre(
-                        rs.getString("nombre")
-                );
-
-                evento.setDescripcion(
-                        rs.getString("descripcion")
-                );
-
-                evento.setEstado(
-                        rs.getString("estado")
-                );
-
-                evento.setFechaEvento(
-                        rs.getDate("fechaEvento")
-                                .toLocalDate()
-                );
-
-                eventos.add(evento);
-            }
+            return rs.next();
 
         } catch(SQLException e) {
 
             e.printStackTrace();
         }
 
-        return eventos;
+        return false;
     }
+
 }

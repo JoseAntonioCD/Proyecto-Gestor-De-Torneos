@@ -12,7 +12,7 @@ public class Evento {
 
     private String descripcion;
 
-    private String estado;
+    private EstadoEvento estado;
 
     private LocalDate fechaEvento;
 
@@ -44,9 +44,11 @@ public class Evento {
 
         this.descripcion = descripcion;
 
-        this.estado = estado;
 
         this.fechaEvento = fechaEvento;
+    }
+
+    public Evento(int idEvento, String nombre, String descripcion, String estado, LocalDate fechaEvento, EntidadPromotora entidad, Localizacion localizacion) {
     }
 
     public int getIdEvento() {
@@ -79,13 +81,12 @@ public class Evento {
         this.descripcion = descripcion;
     }
 
-    public String getEstado() {
+    public EstadoEvento getEstado() {
 
         return estado;
     }
 
-    public void setEstado(String estado) {
-
+    public void setEstado(EstadoEvento estado) {
         this.estado = estado;
     }
 
@@ -152,8 +153,6 @@ public class Evento {
     @Override
     public String toString() {
 
-        return nombre +
-                " - " +
-                fechaEvento;
+        return nombre;
     }
 }

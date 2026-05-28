@@ -37,6 +37,9 @@ public class RegistroController {
         );
     }
 
+    /**
+     * Método que maneja el registro de un nuevo usuario en la aplicación
+     */
     @FXML
     public void handleRegister() {
 
@@ -56,10 +59,15 @@ public class RegistroController {
         String tipo =
                 comboTipo.getValue();
 
-        if(nombre.isEmpty() ||
-                correo.isEmpty() ||
-                password.isEmpty() ||
-                tipo == null) {
+        if(
+                nombre.isBlank()
+                        ||
+                        correo.isBlank()
+                        ||
+                        password.isBlank()
+                        ||
+                        tipo == null
+        ) {
 
             mostrarError(
                     "Completa todos los campos"
@@ -68,8 +76,29 @@ public class RegistroController {
             return;
         }
 
-        Usuario usuario;
+        if(
+                !correo.matches(
+                        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+                )
+        ) {
 
+            mostrarError(
+                    "Correo electrónico inválido"
+            );
+
+            return;
+        }
+
+        if(password.length() < 4) {
+
+            mostrarError(
+                    "La contraseña debe tener mínimo 4 caracteres"
+            );
+
+            return;
+        }
+
+        Usuario usuario;
 
         if(tipo.equals("PARTICIPANTE")) {
 
@@ -111,6 +140,10 @@ public class RegistroController {
         }
     }
 
+    /**
+     * Método que lanza un mensaje de error en caso de que sea necesario
+     * @param mensaje mensaje de error
+     */
     private void mostrarError(String mensaje) {
 
         Alert alert =
@@ -127,6 +160,10 @@ public class RegistroController {
         alert.showAndWait();
     }
 
+    /**
+     * Método que maneja los mensajes que verá el usuario al realizar una acción
+     * @param mensaje Mensaje de feedback
+     */
     private void mostrarInfo(String mensaje) {
 
         Alert alert =
@@ -143,7 +180,9 @@ public class RegistroController {
         alert.showAndWait();
     }
 
-
+    /**
+     * Método que limpia los campos de registro al terminar el proceso
+     */
     private void limpiarCampos() {
 
         txtNombre.clear();
@@ -155,6 +194,9 @@ public class RegistroController {
         comboTipo.setValue(null);
     }
 
+    /**
+     * Método con el que se vuelve a la página de Login
+     */
     @FXML
     public void handleVolverLogin() {
 
