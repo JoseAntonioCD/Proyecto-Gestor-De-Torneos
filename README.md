@@ -7,7 +7,7 @@ El sistema permite a promotores crear y administrar eventos, mientras que los pa
 
 # Autor
 
-Desarrollado por: TU_NOMBRE
+Desarrollado por: JOSE A. CASTILLERO DÍAZ
 
 ---
 
