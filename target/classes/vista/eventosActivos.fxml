@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controller.EventosActivosController"
+        prefWidth="1100"
+        prefHeight="700">
+
+    <!-- TOP -->
+
+    <top>
+
+        <VBox spacing="15"
+              alignment="CENTER"
+              style="-fx-padding: 20px;">
+
+            <Label text="Eventos"
+                   style="-fx-font-size: 28px;
+                          -fx-font-weight: bold;" />
+
+            <TextField fx:id="txtBuscar"
+                       promptText="Buscar evento..."
+                       onKeyReleased="#handleBuscar"
+                       maxWidth="350"/>
+
+        </VBox>
+
+    </top>
+
+    <!-- LEFT -->
+
+    <left>
+
+        <VBox spacing="20"
+              style="-fx-padding: 20px;">
+
+            <!-- EVENTOS ACTIVOS -->
+
+            <VBox spacing="10">
+
+                <Label text="Eventos Activos"
+                       style="-fx-font-size: 18px;
+                              -fx-font-weight: bold;" />
+
+                <ListView fx:id="listEventos"
+                          prefWidth="350"
+                          prefHeight="250"/>
+
+            </VBox>
+
+            <!-- EVENTOS INACTIVOS -->
+
+            <VBox spacing="10">
+
+                <Label text="Eventos Inactivos"
+                       style="-fx-font-size: 18px;
+                              -fx-font-weight: bold;" />
+
+                <ListView fx:id="listEventosInactivos"
+                          prefWidth="350"
+                          prefHeight="250"/>
+
+            </VBox>
+
+        </VBox>
+
+    </left>
+
+    <!-- CENTER -->
+
+    <center>
+
+        <VBox spacing="15"
+              style="-fx-padding: 30px;">
+
+            <Label fx:id="lblNombre"
+                   text="Selecciona un evento"
+                   style="-fx-font-size: 24px;
+                          -fx-font-weight: bold;" />
+
+            <Label fx:id="lblFecha"
+                   text="Fecha"/>
+
+            <Label fx:id="lblPromotor"
+                   text="Promotor"/>
+
+            <TextArea fx:id="txtDescripcion"
+                      editable="false"
+                      wrapText="true"
+                      prefHeight="180"/>
+
+            <Label text="Participantes"
+                   style="-fx-font-size: 18px;
+                          -fx-font-weight: bold;" />
+
+            <ListView fx:id="listParticipantes"
+                      prefHeight="220"/>
+
+        </VBox>
+
+    </center>
+
+    <!-- BOTTOM -->
+
+    <bottom>
+
+        <HBox spacing="20"
+              alignment="CENTER"
+              style="-fx-padding: 20px;">
+
+            <Button fx:id="btnParticipar"
+                    text="Participar"
+                    onAction="#handleParticipar"
+                    prefWidth="180"/>
+
+            <Button fx:id="btnDesapuntarse"
+                    text="Desapuntarse"
+                    onAction="#handleDesapuntarse"
+                    prefWidth="180"/>
+
+            <Button text="Volver"
+                    onAction="#handleVolver"
+                    prefWidth="180"/>
+
+        </HBox>
+
+    </bottom>
+
+</BorderPane>

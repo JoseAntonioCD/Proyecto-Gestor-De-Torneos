@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0"
+            prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RegistroController">
+
+    <children>
+
+        <VBox alignment="CENTER"
+              spacing="18.0"
+              AnchorPane.topAnchor="0.0"
+              AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
+
+            <padding>
+                <Insets top="40"
+                        right="40"
+                        bottom="40"
+                        left="40"/>
+            </padding>
+
+            <!-- TÍTULO -->
+
+            <Label text="Registro de Usuario"
+                   style="-fx-font-size: 28px;
+                          -fx-font-weight: bold;" />
+
+            <!-- NOMBRE -->
+
+            <TextField fx:id="txtNombre"
+                       promptText="Nombre"
+                       maxWidth="320"/>
+
+            <!-- CORREO -->
+
+            <TextField fx:id="txtCorreo"
+                       promptText="Correo electrónico"
+                       maxWidth="320"/>
+
+            <!-- PASSWORD -->
+
+            <PasswordField fx:id="txtPassword"
+                           promptText="Contraseña"
+                           maxWidth="320"/>
+
+            <!-- TIPO USUARIO -->
+
+            <ComboBox fx:id="comboTipo"
+                      promptText="Selecciona tipo usuario"
+                      maxWidth="320"/>
+
+            <!-- BOTÓN REGISTRO -->
+
+            <Button text="Registrarse"
+                    onAction="#handleRegister"
+                    prefWidth="220"
+                    prefHeight="40"/>
+
+            <!-- BOTÓN VOLVER -->
+
+            <Button text="Volver al Login"
+                    onAction="#handleVolverLogin"
+                    prefWidth="220"
+                    prefHeight="40"/>
+
+        </VBox>
+
+    </children>
+
+</AnchorPane>
