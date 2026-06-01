@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controller.DashboardPromotorController"
+        prefWidth="1000"
+        prefHeight="700">
+
+    <!-- TOP -->
+
+    <top>
+
+        <VBox alignment="CENTER"
+              spacing="10"
+              style="-fx-padding: 20px;">
+
+            <Label text="Dashboard Promotor"
+                   style="-fx-font-size: 28px;
+                          -fx-font-weight: bold;" />
+
+        </VBox>
+
+    </top>
+
+    <!-- CENTER -->
+
+    <center>
+
+        <HBox spacing="30"
+              alignment="CENTER">
+
+            <padding>
+                <Insets top="20"
+                        right="20"
+                        bottom="20"
+                        left="20"/>
+            </padding>
+
+            <!-- EVENTOS -->
+
+            <VBox spacing="10">
+
+                <Label text="Mis Eventos"
+                       style="-fx-font-size: 20px;
+                              -fx-font-weight: bold;" />
+
+                <ListView fx:id="listEventos"
+                          prefWidth="420"
+                          prefHeight="450"/>
+
+            </VBox>
+
+            <!-- FORMULARIO -->
+
+            <VBox spacing="12">
+
+                <Label text="Crear / Editar Evento"
+                       style="-fx-font-size: 20px;
+                              -fx-font-weight: bold;" />
+
+                <TextField fx:id="txtNombre"
+                           promptText="Nombre"/>
+
+                <TextArea fx:id="txtDescripcion"
+                          promptText="Descripción"
+                          prefHeight="120"
+                          wrapText="true"/>
+
+                <DatePicker fx:id="dateFecha"/>
+
+                <Label text="Estado del evento"/>
+
+                <ComboBox fx:id="comboEstado"
+                          prefWidth="250"/>
+
+                <Button fx:id="btnCrearEvento"
+                        text="Crear Evento"
+                        onAction="#handleCrearEvento"
+                        prefWidth="220"
+                        prefHeight="40"/>
+
+                <Button fx:id="btnEditarEvento"
+                        text="Editar Evento"
+                        onAction="#handleEditarEvento"
+                        prefWidth="220"
+                        prefHeight="40"/>
+
+                <Button fx:id="btnEliminarEvento"
+                        text="Borrar Evento"
+                        onAction="#handleBorrarEvento"
+                        prefWidth="220"
+                        prefHeight="40"/>
+
+            </VBox>
+
+        </HBox>
+
+    </center>
+
+    <!-- BOTTOM -->
+
+    <bottom>
+
+        <HBox alignment="CENTER"
+              spacing="20"
+              style="-fx-padding: 20px;">
+
+            <Button text="Cerrar Sesión"
+                    onAction="#handleLogout"
+                    prefWidth="220"
+                    prefHeight="40"/>
+
+        </HBox>
+
+    </bottom>
+
+</BorderPane>
