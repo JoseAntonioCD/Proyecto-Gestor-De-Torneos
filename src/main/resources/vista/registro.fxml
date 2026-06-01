@@ -31,44 +31,38 @@
                         left="40"/>
             </padding>
 
-            <!-- TÍTULO -->
+
 
             <Label text="Registro de Usuario"
                    style="-fx-font-size: 28px;
                           -fx-font-weight: bold;" />
 
-            <!-- NOMBRE -->
 
             <TextField fx:id="txtNombre"
                        promptText="Nombre"
                        maxWidth="320"/>
 
-            <!-- CORREO -->
 
             <TextField fx:id="txtCorreo"
                        promptText="Correo electrónico"
                        maxWidth="320"/>
 
-            <!-- PASSWORD -->
 
             <PasswordField fx:id="txtPassword"
                            promptText="Contraseña"
                            maxWidth="320"/>
 
-            <!-- TIPO USUARIO -->
 
             <ComboBox fx:id="comboTipo"
                       promptText="Selecciona tipo usuario"
                       maxWidth="320"/>
 
-            <!-- BOTÓN REGISTRO -->
 
             <Button text="Registrarse"
                     onAction="#handleRegister"
                     prefWidth="220"
                     prefHeight="40"/>
 
-            <!-- BOTÓN VOLVER -->
 
             <Button text="Volver al Login"
                     onAction="#handleVolverLogin"

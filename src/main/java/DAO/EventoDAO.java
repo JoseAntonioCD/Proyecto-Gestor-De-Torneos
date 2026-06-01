@@ -1,16 +1,14 @@
 package DAO;
 
 import dataAccess.ConnectionBD;
-
 import model.*;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventoDAO {
 
-    private Connection conn;
+    private final Connection conn;
 
     private UsuarioDAO usuarioDAO;
 

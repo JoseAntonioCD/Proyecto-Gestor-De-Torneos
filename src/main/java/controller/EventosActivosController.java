@@ -55,6 +55,7 @@ public class EventosActivosController {
 
     public EventosActivosController() {}
 
+
     @FXML
     public void initialize() {
 
@@ -62,6 +63,58 @@ public class EventosActivosController {
                 new EventoDAO();
 
         cargarEventos();
+
+        listEventos.setCellFactory(param -> new ListCell<>() {
+
+            @Override
+            protected void updateItem(
+                    Evento evento,
+                    boolean empty
+            ) {
+
+                super.updateItem(
+                        evento,
+                        empty
+                );
+
+                if(empty || evento == null) {
+
+                    setText(null);
+
+                } else {
+
+                    setText(
+                            evento.getNombre()
+                    );
+                }
+            }
+        });
+
+        listEventosInactivos.setCellFactory(param -> new ListCell<>() {
+
+            @Override
+            protected void updateItem(
+                    Evento evento,
+                    boolean empty
+            ) {
+
+                super.updateItem(
+                        evento,
+                        empty
+                );
+
+                if(empty || evento == null) {
+
+                    setText(null);
+
+                } else {
+
+                    setText(
+                            evento.getNombre()
+                    );
+                }
+            }
+        });
 
         actualizarBotones();
 
@@ -75,10 +128,6 @@ public class EventosActivosController {
                                 nuevoEvento
                         );
                     }
-
-                    /*
-                     * ACTUALIZAR BOTONES
-                     */
 
                     actualizarBotones();
                 });
@@ -192,6 +241,13 @@ public class EventosActivosController {
                         )
 
                         .toList();
+
+        listEventos.getSelectionModel()
+                .clearSelection();
+
+        listEventosInactivos
+                .getSelectionModel()
+                .clearSelection();
 
         listEventos.setItems(
 
